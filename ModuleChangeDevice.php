@@ -79,12 +79,7 @@ class ModuleChangeDevice extends Module
 			$intRedirect = $this->recursiveFindDesktopPage($objPage->pid);
 		}
 
-		$objRedirect = $this->getPageDetails($intRedirect);
-
-		$strUrl = ($this->Environment->ssl ? 'https://' : 'http://') . $objRedirect->domain . '/' . $this->generateFrontendUrl($objRedirect->row(), null, $objRedirect->language);
-		$strUrl .= (strpos($strUrl, '?') === false ? '?' : '&') . 'desktop=1';
-
-		$this->Template->href = $strUrl;
+		$this->Template->href = $this->generateUrl($this->getPageDetails($intRedirect));
 		$this->Template->label = $this->desktopLabel;
 		$this->Template->title = $this->desktopTitle;
 		$this->Template->target = ($this->desktopTarget ? true : false);
@@ -107,6 +102,54 @@ class ModuleChangeDevice extends Module
 		{
 			return $this->recursiveFindDesktopPage($objPage->pid);
 		}
+	}
+
+
+	protected function generateUrl($objPage)
+	{
+		$arrParams = array('url'=>array(), 'get'=>array());
+
+		foreach( array_keys($_GET) as $strKey )
+		{
+			$strValue = $this->Input->get($strKey);
+
+			// Do not keep empty parameters and arrays
+			if ($strValue != '' && $strKey != 'language')
+			{
+				// Parameter passed after "?"
+				if (strpos($this->Environment->request, $strKey.'='.$strValue) !== false)
+				{
+					$arrParams['get'][$strKey] = $strValue;
+				}
+				else
+				{
+					$arrParams['url'][$strKey] = $strValue;
+				}
+			}
+		}
+
+		// Add the desktop cookie
+		$arrParams['get']['desktop'] = '1';
+
+		// Make sure $strParam is empty, otherwise previous pages could affect url
+    	$strParam = '';
+    	$arrRequest = array();
+
+    	foreach( $arrParams['url'] as $k => $v )
+    	{
+    		$strParam .= '/' . $k . '/' . $v;
+    	}
+
+    	foreach( $arrParams['get'] as $k => $v )
+    	{
+    		$arrRequest[] = $k . '=' . $v;
+    	}
+
+		$strUrl  = ($this->Environment->ssl ? 'https://' : 'http://') . $objPage->domain . '/';
+		$strUrl .= $this->generateFrontendUrl($objPage->row(), $strParam, $objPage->language);
+		$strUrl .= '?' . implode('&amp;', $arrRequest);
+
+		return $strUrl;
 	}
 }
 
