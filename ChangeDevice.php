@@ -32,20 +32,15 @@ class ChangeDevice extends Frontend
 
 	public function handleDeviceRedirect()
 	{
-		if ($this->Environment->agent->mobile)
+		// Set a cookie to keep the desktop site
+		if ($this->Input->get('desktop') === '1')
 		{
-			// Set a cookie and do not redirect
-			if ($this->Input->get('desktop') === '1')
-			{
-				$this->setCookie('useDesktop', true, 0);
-				$this->redirect(preg_replace('/((\?|&(amp;)?)desktop=1$)|desktop=1&(amp;)?/i', '', $this->Environment->request));
-			}
+			$this->setCookie('useDesktop', true, 0);
+			$this->redirect(preg_replace('/((\?|&(amp;)?)desktop=1$)|desktop=1&(amp;)?/i', '', $this->Environment->request));
+		}
 
-			if ($this->Input->cookie('useDesktop'))
-			{
-				return;
-			}
-
+		if ($this->Environment->agent->mobile && !$this->Input->cookie('useDesktop'))
+		{
 			global $objPage;
 
 			$objMobileRoot = $this->Database->prepare("SELECT * FROM tl_page WHERE type='root' AND isMobileDevice='1' AND desktopRoot=?")->execute($objPage->rootId);
