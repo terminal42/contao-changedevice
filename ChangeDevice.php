@@ -35,10 +35,10 @@ class ChangeDevice extends Frontend
 		if ($this->Environment->agent->mobile)
 		{
 			// Set a cookie and do not redirect
-			if ($this->Input->get('desktop') == '1')
+			if ($this->Input->get('desktop') === '1')
 			{
 				$this->setCookie('useDesktop', true, 0);
-				return;
+				$this->redirect(preg_replace('/((\?|&(amp;)?)desktop=1$)|desktop=1&(amp;)?/i', '', $this->Environment->request));
 			}
 
 			if ($this->Input->cookie('useDesktop'))
