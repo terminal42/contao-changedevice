@@ -33,4 +33,13 @@
 $GLOBALS['TL_LANG']['tl_page']['isMobileDevice']	= array('Mobiler Seitenbaum', 'Diese Seitestruktur ist für mobile Geräte.');
 $GLOBALS['TL_LANG']['tl_page']['desktopRoot']		= array('Desktop Seitenbaum', 'Wählen Sie die Root-Seite für Desktop-Geräte.');
 $GLOBALS['TL_LANG']['tl_page']['desktopPage']		= array('Desktop-Seite', 'Wählen Sie die Seite aus der Desktop-Struktur, welcher dieser Seite entspricht.');
+$GLOBALS['TL_LANG']['tl_page']['deviceDetection']	= array('Geräte-Erkennung', 'Wählen Sie wie das Gerät erkannt werden soll');
+$GLOBALS['TL_LANG']['tl_page']['deviceMedia']		= array('Media Query', 'Geben Sie eine gültige Media Query zu Erkennung ein. Beispiel: "(max-width: 768px)"');
+
+
+/**
+ * Reference
+ */
+$GLOBALS['TL_LANG']['tl_page']['deviceDetection']['server']	= 'Server-seitig (Contao/User-Agent)';
+$GLOBALS['TL_LANG']['tl_page']['deviceDetection']['client']	= 'Client-seitig (Browser/Media Query)';
 

@@ -33,4 +33,13 @@
 $GLOBALS['TL_LANG']['tl_page']['isMobileDevice']	= array('Mobile Site', 'Check here if this page tree is for mobile devices.');
 $GLOBALS['TL_LANG']['tl_page']['desktopRoot']		= array('Desktop Site', 'Select the root page that contains the desktop equivalent of this page tree.');
 $GLOBALS['TL_LANG']['tl_page']['desktopPage']		= array('Desktop Page', 'Select the page from desktop tree that is the same as this mobile page.');
+$GLOBALS['TL_LANG']['tl_page']['deviceDetection']	= array('Device detection', 'Select how a device should be detected.');
+$GLOBALS['TL_LANG']['tl_page']['deviceMedia']		= array('Media query', 'Enter a valid media query to detect the device. Example: "(max-width: 768px)"');
+
+
+/**
+ * Reference
+ */
+$GLOBALS['TL_LANG']['tl_page']['deviceDetection']['server']	= 'Server-side (Contao/User-Agent)';
+$GLOBALS['TL_LANG']['tl_page']['deviceDetection']['client']	= 'Client-side (Browser/Media Query)';
 

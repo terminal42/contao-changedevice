@@ -29,6 +29,8 @@ CREATE TABLE `tl_page` (
   `isMobileDevice` char(1) NOT NULL default '',
   `desktopRoot` int(10) unsigned NOT NULL default '0',
   `desktopPage` int(10) unsigned NOT NULL default '0',
+  `deviceDetection` varchar(8) NOT NULL default '',
+  `deviceMedia` varchar(255) NOT NULL default '',
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 

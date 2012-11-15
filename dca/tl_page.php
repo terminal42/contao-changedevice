@@ -30,15 +30,7 @@
 /**
  * Config
  */
-$GLOBALS['TL_DCA']['tl_page']['config']['onload_callback'][] = array('tl_page_changedevice', 'showDesktopSelect');
-
-
-/**
- * Palettes
- */
-$GLOBALS['TL_DCA']['tl_page']['palettes']['__selector__'][] = 'isMobileDevice';
-$GLOBALS['TL_DCA']['tl_page']['palettes']['root'] = str_replace('{sitemap_legend:hide}', '{device_legend},isMobileDevice;{sitemap_legend:hide}', $GLOBALS['TL_DCA']['tl_page']['palettes']['root']);
-$GLOBALS['TL_DCA']['tl_page']['subpalettes']['isMobileDevice'] = 'desktopRoot';
+$GLOBALS['TL_DCA']['tl_page']['config']['onload_callback'][] = array('tl_page_changedevice', 'prepareDataContainer');
 
 
 /**
@@ -70,6 +62,24 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['desktopPage'] = array
 	'eval'                    => array('includeBlankOption'=>true, 'tl_class'=>'w50'),
 );
 
+$GLOBALS['TL_DCA']['tl_page']['fields']['deviceDetection'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_page']['deviceDetection'],
+	'exclude'                 => true,
+	'inputType'               => 'select',
+	'options'                 => array('server', 'client'),
+	'reference'               => &$GLOBALS['TL_LANG']['tl_page']['deviceDetection'],
+	'eval'                    => array('mandatory'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50'),
+);
+
+$GLOBALS['TL_DCA']['tl_page']['fields']['deviceMedia'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_page']['deviceMedia'],
+	'exclude'                 => true,
+	'inputType'               => 'text',
+	'eval'                    => array('mandatory'=>true, 'decodeEntities'=>true, 'tl_class'=>'clr long'),
+);
+
 
 class tl_page_changedevice extends Backend
 {
@@ -77,13 +87,29 @@ class tl_page_changedevice extends Backend
 	/**
 	 * Show the dropdown field to select the desktop site if appropriate
 	 */
-	public function showDesktopSelect($dc)
+	public function prepareDataContainer($dc)
 	{
 		if ($this->Input->get('act') == 'edit')
 		{
 			$objPage = $this->getPageDetails($dc->id);
 
-			if ($objPage->type != 'root')
+			if ($objPage->type == 'root')
+			{
+				$strPalette = '{device_legend},isMobileDevice';
+
+				if ($objPage->isMobileDevice)
+				{
+					$strPalette .= ',desktopRoot,deviceDetection';
+
+					if ($objPage->deviceDetection == 'client')
+					{
+						$strPalette .= ',deviceMedia';
+					}
+				}
+
+				$GLOBALS['TL_DCA']['tl_page']['palettes']['root'] = str_replace('{sitemap_legend:hide}', $strPalette . ';{sitemap_legend:hide}', $GLOBALS['TL_DCA']['tl_page']['palettes']['root']);
+			}
+			else
 			{
 				$objRootPage = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")->execute($objPage->rootId);
 

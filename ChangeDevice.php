@@ -39,14 +39,14 @@ class ChangeDevice extends Frontend
 			$this->redirect(preg_replace('/((\?|&(amp;)?)desktop=1$)|desktop=1&(amp;)?/i', '', $this->Environment->request));
 		}
 
-		if ($this->Environment->agent->mobile && !$this->Input->cookie('useDesktop'))
+		if (!$this->Input->cookie('useDesktop'))
 		{
 			global $objPage;
 
-			$objMobileRoot = $this->Database->prepare("SELECT * FROM tl_page WHERE type='root' AND isMobileDevice='1' AND desktopRoot=?")->execute($objPage->rootId);
+			$objMobileRoot = $this->Database->prepare("SELECT * FROM tl_page WHERE type='root' AND isMobileDevice='1' AND desktopRoot=?")->limit(1)->execute($objPage->rootId);
 
 			// Found a matching mobile page tree for the current site. We must be on a desktop tree.
-			if ($objMobileRoot->numRows)
+			if ($objMobileRoot->numRows && ($this->Environment->agent->mobile || $objMobileRoot->deviceDetection == 'client'))
 			{
 				$objMobilePages = $this->Database->prepare("SELECT id FROM tl_page WHERE desktopPage=?")->execute($objPage->id);
 
@@ -56,7 +56,16 @@ class ChangeDevice extends Frontend
 
 					if ($objMobilePage->rootId == $objMobileRoot->id)
 					{
-						$this->redirect(($this->Environment->ssl ? 'https://' : 'http://') . $objMobilePage->domain . '/' . $this->generateFrontendUrl($objMobilePage->row(), null, $objMobilePage->language));
+						$strUrl = ($this->Environment->ssl ? 'https://' : 'http://') . $objMobilePage->domain . '/' . $this->generateFrontendUrl($objMobilePage->row(), null, $objMobilePage->language);
+
+						if ($objMobileRoot->deviceDetection == 'client')
+						{
+							$GLOBALS['TL_HEAD'][] = '<script>if(window.matchMedia && window.matchMedia("' . str_replace('"', '\"', $objMobileRoot->deviceMedia) . '").matches) window.location.href=\'' . $strUrl . '\';</script>';
+						}
+						else
+						{
+							$this->redirect($strUrl);
+						}
 					}
 				}
 			}
