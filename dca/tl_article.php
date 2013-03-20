@@ -57,7 +57,7 @@ class tl_article_changedevice extends Backend
 	 */
 	public function showDesktopSelect($dc)
 	{
-		if ($this->Input->get('act') == 'edit')
+		if (\Input::get('act') == 'edit')
 		{
 			$objArticle = $this->Database->prepare("SELECT pid, inColumn FROM tl_article WHERE id=?")->execute($dc->id);
 			$objPage = $this->getPageDetails($objArticle->pid);
@@ -69,7 +69,7 @@ class tl_article_changedevice extends Backend
 				$GLOBALS['TL_DCA']['tl_article']['palettes']['default'] = preg_replace('@([,|;]title)([,|;])@', '$1,desktopArticle$2', $GLOBALS['TL_DCA']['tl_article']['palettes']['default']);
 			}
 		}
-		elseif ($this->Input->get('act') == 'editAll')
+		elseif (\Input::get('act') == 'editAll')
 		{
 			$GLOBALS['TL_DCA']['tl_page']['palettes']['default'] = preg_replace('@([,|;]title)([,|;])@','$1,desktopArticle$2', $GLOBALS['TL_DCA']['tl_page']['palettes']['default']);
 		}
