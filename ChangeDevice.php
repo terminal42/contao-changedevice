@@ -49,7 +49,7 @@ class ChangeDevice extends Frontend
 			if ($objMobileRoot->numRows && ($this->Environment->agent->mobile || $objMobileRoot->deviceDetection == 'client'))
 			{
 				$objMobilePages = $this->Database->prepare("SELECT id FROM tl_page WHERE desktopPage=?")->execute($objPage->id);
-
+				
 				while ($objMobilePages->next())
 				{
 					$objMobilePage = $this->getPageDetails($objMobilePages->id);

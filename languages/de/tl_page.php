@@ -36,10 +36,15 @@ $GLOBALS['TL_LANG']['tl_page']['desktopPage']		= array('Desktop-Seite', 'Wählen
 $GLOBALS['TL_LANG']['tl_page']['deviceDetection']	= array('Geräte-Erkennung', 'Wählen Sie wie das Gerät erkannt werden soll');
 $GLOBALS['TL_LANG']['tl_page']['deviceMedia']		= array('Media Query', 'Geben Sie eine gültige Media Query zu Erkennung ein. Beispiel: "(max-width: 768px)"');
 
-
 /**
  * Reference
  */
 $GLOBALS['TL_LANG']['tl_page']['deviceDetection']['server']	= 'Server-seitig (Contao/User-Agent)';
 $GLOBALS['TL_LANG']['tl_page']['deviceDetection']['client']	= 'Client-seitig (Browser/Media Query)';
 
+/**
+ * Legend
+ */
+$GLOBALS['TL_LANG']['tl_page']['device_legend']	= 'Gerätewechsler';
+
+?>
