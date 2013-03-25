@@ -89,7 +89,7 @@ class tl_page_changedevice extends Backend
 	 */
 	public function prepareDataContainer($dc)
 	{
-		if (\Input::get('act') == 'edit')
+		if ($this->Input->get('act') == 'edit')
 		{
 			$objPage = $this->getPageDetails($dc->id);
 
@@ -119,7 +119,7 @@ class tl_page_changedevice extends Backend
 				}
 			}
 		}
-		elseif (\Input::get('act') == 'editAll')
+		elseif ($this->Input->get('act') == 'editAll')
 		{
 			foreach( $GLOBALS['TL_DCA']['tl_page']['palettes'] as $name => $palette )
 			{

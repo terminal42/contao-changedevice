@@ -33,37 +33,38 @@ class ChangeDevice extends Frontend
 	public function handleDeviceRedirect()
 	{
 		// Set a cookie to keep the desktop site
-		if (\Input::get('desktop') === '1')
+		if ($this->Input->get('desktop') === '1')
 		{
 			$this->setCookie('useDesktop', true, 0);
-			$this->redirect(preg_replace('/((\?|&(amp;)?)desktop=1$)|desktop=1&(amp;)?/i', '', \Environment::get('request')));
+			$this->redirect(preg_replace('/((\?|&(amp;)?)desktop=1$)|desktop=1&(amp;)?/i', '', $this->Environment->request));
 		}
 
-		if (!\Input::cookie('useDesktop'))
+		if (!$this->Input->cookie('useDesktop'))
 		{
 			global $objPage;
 
 			$objMobileRoot = $this->Database->prepare("SELECT * FROM tl_page WHERE type='root' AND isMobileDevice='1' AND desktopRoot=?")->limit(1)->execute($objPage->rootId);
 
 			// Found a matching mobile page tree for the current site. We must be on a desktop tree.
-			if ($objMobileRoot->numRows && (\Environment::get('agent')->mobile || $objMobileRoot->deviceDetection == 'client'))
+			if ($objMobileRoot->numRows && ($this->Environment->agent->mobile || $objMobileRoot->deviceDetection == 'client'))
 			{
 				$objMobilePages = $this->Database->prepare("SELECT id FROM tl_page WHERE desktopPage=?")->execute($objPage->id);
-
+				
 				while ($objMobilePages->next())
 				{
 					$objMobilePage = $this->getPageDetails($objMobilePages->id);
 
 					if ($objMobilePage->rootId == $objMobileRoot->id)
 					{
-						$strUrl = (\Environment::get('ssl') ? 'https://' : 'http://') . $objMobilePage->domain . '/' . $this->generateFrontendUrl($objMobilePage->row(), null, $objMobilePage->language);
+						$strUrl = ($this->Environment->ssl ? 'https://' : 'http://') . $objMobilePage->domain . '/' . $this->generateFrontendUrl($objMobilePage->row(), null, $objMobilePage->language);
+
 						if ($objMobileRoot->deviceDetection == 'client')
 						{
 							global $objPage;
 							$blnXHTML = ($objPage->outputFormat != 'html5');
 
 							// Add matchMedia polyfill on mobile only to make sure we detect them correctly
-							if (\Environment::get('agent')->mobile)
+							if ($this->Environment->agent->mobile)
 							{
 								$GLOBALS['TL_HEAD']['matchMedia'] = '<script' . ($blnXHTML ? ' type="text/javascript"' : '') . '>
 /*! matchMedia() polyfill - Test a CSS media type/query in JS. Authors & copyright (c) 2012: Scott Jehl, Paul Irish, Nicholas Zakas. Dual MIT/BSD license */
