@@ -43,6 +43,7 @@ $GLOBALS['TL_DCA']['tl_article']['fields']['desktopArticle'] = array
 	'inputType'               => 'select',
 	'options_callback'        => array('tl_article_changedevice', 'getDesktopArticles'),
 	'eval'                    => array('includeBlankOption'=>true, 'tl_class'=>'w50'),
+	'sql'					  => "int(10) unsigned NOT NULL default '0'"
 );
 
 
@@ -52,15 +53,15 @@ class tl_article_changedevice extends Backend
 	/**
 	 * Inject fields if appropriate.
 	 *
-	 * @access public
+	 * @param $dc
 	 * @return void
 	 */
 	public function showDesktopSelect($dc)
 	{
-		if ($this->Input->get('act') == 'edit')
+		if (\Input::get('act') == 'edit')
 		{
 			$objArticle = $this->Database->prepare("SELECT pid, inColumn FROM tl_article WHERE id=?")->execute($dc->id);
-			$objPage = $this->getPageDetails($objArticle->pid);
+			$objPage = PageModel::findWithDetails($objArticle->pid);
 
 			if ($objPage->numRows && $objPage->desktopPage > 0)
 			{
@@ -69,7 +70,7 @@ class tl_article_changedevice extends Backend
 				$GLOBALS['TL_DCA']['tl_article']['palettes']['default'] = preg_replace('@([,|;]title)([,|;])@', '$1,desktopArticle$2', $GLOBALS['TL_DCA']['tl_article']['palettes']['default']);
 			}
 		}
-		elseif ($this->Input->get('act') == 'editAll')
+		elseif (\Input::get('act') == 'editAll')
 		{
 			$GLOBALS['TL_DCA']['tl_page']['palettes']['default'] = preg_replace('@([,|;]title)([,|;])@','$1,desktopArticle$2', $GLOBALS['TL_DCA']['tl_page']['palettes']['default']);
 		}
@@ -80,12 +81,13 @@ class tl_article_changedevice extends Backend
 	 * Return all fallback articles for the current page (used as options_callback).
 	 *
 	 * @access public
+	 * @param $dc
 	 * @return array
 	 */
 	public function getDesktopArticles($dc)
 	{
 		$objArticle = $this->Database->prepare("SELECT pid, inColumn FROM tl_article WHERE id=?")->execute($dc->id);
-		$objPage = $this->getPageDetails($objArticle->pid);
+		$objPage = PageModel::findWithDetails($objArticle->pid);
 
 		$arrArticles = array();
 

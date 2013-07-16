@@ -79,7 +79,7 @@ class ModuleChangeDevice extends Module
 			$intRedirect = $this->recursiveFindDesktopPage($objPage->pid);
 		}
 
-		$this->Template->href = $this->generateUrl($this->getPageDetails($intRedirect));
+		$this->Template->href = $this->generateUrl(PageModel::findWithDetails($intRedirect));
 		$this->Template->label = $this->desktopLabel;
 		$this->Template->title = $this->desktopTitle;
 		$this->Template->target = ($this->desktopTarget ? true : false);
@@ -111,13 +111,13 @@ class ModuleChangeDevice extends Module
 
 		foreach( array_keys($_GET) as $strKey )
 		{
-			$strValue = $this->Input->get($strKey);
+			$strValue =\Input::get($strKey);
 
 			// Do not keep empty parameters and arrays
 			if ($strValue != '' && $strKey != 'language')
 			{
 				// Parameter passed after "?"
-				if (strpos($this->Environment->request, $strKey.'='.$strValue) !== false)
+				if (strpos(\Environment::get('request'), $strKey.'='.$strValue) !== false)
 				{
 					$arrParams['get'][$strKey] = $strValue;
 				}

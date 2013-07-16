@@ -42,6 +42,7 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['isMobileDevice'] = array
 	'exclude'                 => true,
 	'inputType'               => 'checkbox',
 	'eval'                    => array('submitOnChange'=>true),
+	'sql'					  => "char(1) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['desktopRoot'] = array
@@ -51,6 +52,7 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['desktopRoot'] = array
 	'inputType'               => 'select',
 	'options_callback'        => array('tl_page_changedevice', 'getDesktopRootPages'),
 	'eval'                    => array('mandatory'=>true, 'includeBlankOption'=>true, 'tl_class'=>'w50'),
+	'sql'					  => "int(10) unsigned NOT NULL default '0'"
 );
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['desktopPage'] = array
@@ -60,6 +62,7 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['desktopPage'] = array
 	'inputType'               => 'select',
 	'options_callback'        => array('tl_page_changedevice', 'getDesktopPages'),
 	'eval'                    => array('includeBlankOption'=>true, 'tl_class'=>'w50'),
+	'sql'					  => "int(10) unsigned NOT NULL default '0'"
 );
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['deviceDetection'] = array
@@ -70,6 +73,7 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['deviceDetection'] = array
 	'options'                 => array('server', 'client'),
 	'reference'               => &$GLOBALS['TL_LANG']['tl_page']['deviceDetection'],
 	'eval'                    => array('mandatory'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50'),
+	'sql'					  => "varchar(8) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_page']['fields']['deviceMedia'] = array
@@ -78,6 +82,7 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['deviceMedia'] = array
 	'exclude'                 => true,
 	'inputType'               => 'text',
 	'eval'                    => array('mandatory'=>true, 'decodeEntities'=>true, 'tl_class'=>'clr long'),
+	'sql'					  => "varchar(255) NOT NULL default ''"
 );
 
 
@@ -86,12 +91,14 @@ class tl_page_changedevice extends Backend
 
 	/**
 	 * Show the dropdown field to select the desktop site if appropriate
+	 *
+	 * @param $dc
 	 */
 	public function prepareDataContainer($dc)
 	{
-		if ($this->Input->get('act') == 'edit')
+		if (\Input::get('act') == 'edit')
 		{
-			$objPage = $this->getPageDetails($dc->id);
+			$objPage = PageModel::findWithDetails($dc->id);
 
 			if ($objPage->type == 'root')
 			{
@@ -119,7 +126,7 @@ class tl_page_changedevice extends Backend
 				}
 			}
 		}
-		elseif ($this->Input->get('act') == 'editAll')
+		elseif (\Input::get('act') == 'editAll')
 		{
 			foreach( $GLOBALS['TL_DCA']['tl_page']['palettes'] as $name => $palette )
 			{
@@ -135,6 +142,7 @@ class tl_page_changedevice extends Backend
 	/**
 	 * Get a list of root pages that could be a desktop site
 	 *
+	 * @param $dc
 	 * @return array
 	 */
 	public function getDesktopRootPages($dc)
@@ -154,12 +162,13 @@ class tl_page_changedevice extends Backend
 	/**
 	 * Generate a list of pages for the desktop site
 	 *
+	 * @param $dc
 	 * @return array
 	 */
 	public function getDesktopPages($dc)
 	{
 		$arrPages = array();
-		$objPage = $this->getPageDetails($dc->id);
+		$objPage = PageModel::findWithDetails($dc->id);
 		$objRootPage = $this->Database->prepare("SELECT * FROM tl_page WHERE id=?")->execute($objPage->rootId);
 
 		if ($objRootPage->isMobileDevice && $objRootPage->desktopRoot != 0)
@@ -190,7 +199,6 @@ class tl_page_changedevice extends Backend
 		}
 
 		++$level;
-		$strOptions = '';
 
 		while ($objPages->next())
 		{
