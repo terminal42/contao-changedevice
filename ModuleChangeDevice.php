@@ -145,8 +145,11 @@ class ModuleChangeDevice extends Module
     		$arrRequest[] = $k . '=' . $v;
     	}
 
-		$strUrl  = ($this->Environment->ssl ? 'https://' : 'http://') . $objPage->domain . '/';
-		$strUrl .= $this->generateFrontendUrl($objPage->row(), $strParam, $objPage->language);
+		$strUrl = $this->generateFrontendUrl($objPage->row(), $strParam, $objPage->language);
+		if(substr($strUrl,0,4) != 'http' && $objPage->domain)
+		{
+			$strUrl = ($this->Environment->ssl ? 'https://' : 'http://') . $objPage->domain . '/' . $strUrl;
+		}
 		$strUrl .= '?' . implode('&amp;', $arrRequest);
 
 		return $strUrl;

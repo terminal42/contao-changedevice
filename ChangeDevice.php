@@ -56,7 +56,11 @@ class ChangeDevice extends Frontend
 
 					if ($objMobilePage->rootId == $objMobileRoot->id)
 					{
-						$strUrl = ($this->Environment->ssl ? 'https://' : 'http://') . $objMobilePage->domain . '/' . $this->generateFrontendUrl($objMobilePage->row(), null, $objMobilePage->language);
+						$strUrl = $this->generateFrontendUrl($objMobilePage->row(), null, $objMobilePage->language);
+						if(substr($strUrl,0,4) != 'http' && $objMobilePage->domain)
+						{
+							$strUrl = ($this->Environment->ssl ? 'https://' : 'http://') . $objMobilePage->domain . '/' . $strUrl;
+						}
 
 						if ($objMobileRoot->deviceDetection == 'client')
 						{
