@@ -33,35 +33,37 @@ class ChangeDevice extends Frontend
 	public function handleDeviceRedirect()
 	{
 		// Set a cookie to keep the desktop site
-		if ($this->Input->get('desktop') === '1')
+		if (\Input::get('desktop') === '1')
 		{
 			$this->setCookie('useDesktop', true, 0);
-			$this->redirect(preg_replace('/((\?|&(amp;)?)desktop=1$)|desktop=1&(amp;)?/i', '', $this->Environment->request));
+			\Controller::redirect(preg_replace('/((\?|&(amp;)?)desktop=1$)|desktop=1&(amp;)?/i', '', \Environment::get('request')));
 		}
 
-		if (!$this->Input->cookie('useDesktop'))
+		if (!\Input::cookie('useDesktop'))
 		{
-			global $objPage;
 
-			$objMobileRoot = $this->Database->prepare("SELECT * FROM tl_page WHERE type='root' AND isMobileDevice='1' AND desktopRoot=?")->limit(1)->execute($objPage->rootId);
+			$objMobileRoot = $this->Database->prepare("SELECT * FROM tl_page WHERE type='root' AND isMobileDevice='1' AND desktopRoot=?")->limit(1)->execute($GLOBALS['objPage']->rootId);
 
 			// Found a matching mobile page tree for the current site. We must be on a desktop tree.
 			if ($objMobileRoot->numRows && ($this->Environment->agent->mobile || $objMobileRoot->deviceDetection == 'client'))
 			{
-				$objMobilePages = $this->Database->prepare("SELECT id FROM tl_page WHERE desktopPage=?")->execute($objPage->id);
+				$objMobilePages = $this->Database->prepare("SELECT id FROM tl_page WHERE desktopPage=?")->execute($GLOBALS['objPage']->id);
 
 				while ($objMobilePages->next())
 				{
-					$objMobilePage = $this->getPageDetails($objMobilePages->id);
+					$objMobilePage = PageModel::findWithDetails($objMobilePages->id);
 
 					if ($objMobilePage->rootId == $objMobileRoot->id)
 					{
-						$strUrl = ($this->Environment->ssl ? 'https://' : 'http://') . $objMobilePage->domain . '/' . $this->generateFrontendUrl($objMobilePage->row(), null, $objMobilePage->language);
+						$strUrl = $this->generateFrontendUrl($objMobilePage->row(), null, $objMobilePage->language);
+						if(substr($strUrl,0,4) != 'http' && $objMobilePage->domain)
+						{
+							$strUrl = ($this->Environment->ssl ? 'https://' : 'http://') . $objMobilePage->domain . '/' . $strUrl;
+						}
 
 						if ($objMobileRoot->deviceDetection == 'client')
 						{
-							global $objPage;
-							$blnXHTML = ($objPage->outputFormat != 'html5');
+							$blnXHTML = ($GLOBALS['objPage']->outputFormat != 'html5');
 
 							// Add matchMedia polyfill on mobile only to make sure we detect them correctly
 							if ($this->Environment->agent->mobile)
@@ -76,7 +78,7 @@ window.matchMedia=window.matchMedia||(function(e,f){var c,a=e.documentElement,b=
 						}
 						else
 						{
-							$this->redirect($strUrl);
+							\Controller::redirect($strUrl);
 						}
 					}
 				}

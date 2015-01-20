@@ -42,6 +42,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['desktopLabel'] = array
 	'exclude'		=> true,
 	'inputType'		=> 'text',
 	'eval'			=> array('mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
+	'sql'			=> "varchar(255) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['desktopTarget'] = array
@@ -50,6 +51,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['desktopTarget'] = array
 	'exclude'		=> true,
 	'inputType'		=> 'checkbox',
 	'eval'			=> array('tl_class'=>'w50 m12'),
+	'sql'			=> "char(1) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['desktopTitle'] = array
@@ -58,5 +60,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['desktopTitle'] = array
 	'exclude'		=> true,
 	'inputType'		=> 'text',
 	'eval'			=> array('mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'clr long'),
+	'sql'			=> "varchar(255) NOT NULL default ''"
 );
 

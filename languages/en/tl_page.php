@@ -43,3 +43,8 @@ $GLOBALS['TL_LANG']['tl_page']['deviceMedia']		= array('Media query', 'Enter a v
 $GLOBALS['TL_LANG']['tl_page']['deviceDetection']['server']	= 'Server-side (Contao/User-Agent)';
 $GLOBALS['TL_LANG']['tl_page']['deviceDetection']['client']	= 'Client-side (Browser/Media Query)';
 
+
+/**
+ * Legends
+ */
+$GLOBALS['TL_LANG']['tl_page']['device_legend'] = 'Device switch';

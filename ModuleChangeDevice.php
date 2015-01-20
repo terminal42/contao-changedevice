@@ -79,7 +79,7 @@ class ModuleChangeDevice extends Module
 			$intRedirect = $this->recursiveFindDesktopPage($objPage->pid);
 		}
 
-		$this->Template->href = $this->generateUrl($this->getPageDetails($intRedirect));
+		$this->Template->href = $this->generateUrl(PageModel::findWithDetails($intRedirect));
 		$this->Template->label = $this->desktopLabel;
 		$this->Template->title = $this->desktopTitle;
 		$this->Template->target = ($this->desktopTarget ? true : false);
@@ -111,13 +111,13 @@ class ModuleChangeDevice extends Module
 
 		foreach( array_keys($_GET) as $strKey )
 		{
-			$strValue = $this->Input->get($strKey);
+			$strValue =\Input::get($strKey);
 
 			// Do not keep empty parameters and arrays
 			if ($strValue != '' && $strKey != 'language')
 			{
 				// Parameter passed after "?"
-				if (strpos($this->Environment->request, $strKey.'='.$strValue) !== false)
+				if (strpos(\Environment::get('request'), $strKey.'='.$strValue) !== false)
 				{
 					$arrParams['get'][$strKey] = $strValue;
 				}
@@ -145,8 +145,11 @@ class ModuleChangeDevice extends Module
     		$arrRequest[] = $k . '=' . $v;
     	}
 
-		$strUrl  = ($this->Environment->ssl ? 'https://' : 'http://') . $objPage->domain . '/';
-		$strUrl .= $this->generateFrontendUrl($objPage->row(), $strParam, $objPage->language);
+		$strUrl = $this->generateFrontendUrl($objPage->row(), $strParam, $objPage->language);
+		if(substr($strUrl,0,4) != 'http' && $objPage->domain)
+		{
+			$strUrl = ($this->Environment->ssl ? 'https://' : 'http://') . $objPage->domain . '/' . $strUrl;
+		}
 		$strUrl .= '?' . implode('&amp;', $arrRequest);
 
 		return $strUrl;

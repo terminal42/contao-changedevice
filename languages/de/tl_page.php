@@ -43,3 +43,8 @@ $GLOBALS['TL_LANG']['tl_page']['deviceMedia']		= array('Media Query', 'Geben Sie
 $GLOBALS['TL_LANG']['tl_page']['deviceDetection']['server']	= 'Server-seitig (Contao/User-Agent)';
 $GLOBALS['TL_LANG']['tl_page']['deviceDetection']['client']	= 'Client-seitig (Browser/Media Query)';
 
+
+/**
+ * Legends
+ */
+$GLOBALS['TL_LANG']['tl_page']['device_legend'] = 'Endgeräte-Umschaltung';
